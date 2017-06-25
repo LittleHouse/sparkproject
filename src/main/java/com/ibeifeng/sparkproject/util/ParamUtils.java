@@ -1,6 +1,5 @@
 package com.ibeifeng.sparkproject.util;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ibeifeng.sparkproject.conf.ConfigurationManager;
 import com.ibeifeng.sparkproject.constant.Constants;

@@ -1,7 +1,9 @@
 package com.ibeifeng.sparkproject.spark;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.spark.Accumulator;
 import org.apache.spark.SparkConf;
@@ -15,14 +17,18 @@ import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.hive.HiveContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ibeifeng.sparkproject.conf.ConfigurationManager;
 import com.ibeifeng.sparkproject.constant.Constants;
 import com.ibeifeng.sparkproject.dao.ISessionAggrStatDAO;
+import com.ibeifeng.sparkproject.dao.ISessionDetailDAO;
 import com.ibeifeng.sparkproject.dao.ITaskDAO;
 import com.ibeifeng.sparkproject.dao.factory.DAOFactory;
 import com.ibeifeng.sparkproject.domain.SessionAggrStat;
+import com.ibeifeng.sparkproject.domain.SessionDetail;
 import com.ibeifeng.sparkproject.domain.Task;
 import com.ibeifeng.sparkproject.test.MockData;
 import com.ibeifeng.sparkproject.util.DateUtils;
@@ -34,6 +40,8 @@ import com.ibeifeng.sparkproject.util.ValidUtils;
 import scala.Tuple2;
 
 public class UserVisitSessionAnalyzeSpark {
+	
+	private static Logger logger = LoggerFactory.getLogger(UserVisitSessionAnalyzeSpark.class);
 	
 	public static void main(String[] args) {
 		SparkConf conf = new SparkConf()
@@ -54,16 +62,18 @@ public class UserVisitSessionAnalyzeSpark {
 		
 		JavaPairRDD<String, String> sessionid2AggrInfoRDD = aggregateBySession(sqlContext, actionRDD);
 		
-		
 		Accumulator<String> sessionAggrStatAccumulator = sc.accumulator("", new SessionAggrStatAccumulator());
+		
 		JavaPairRDD<String, String> filteredSessionid2AggrInfoRDD = filterSessionAndAggrStat(
 				sessionid2AggrInfoRDD,taskParam,sessionAggrStatAccumulator);
 		
-		System.out.println(filteredSessionid2AggrInfoRDD.count()); 
-		
-		System.out.println(sessionAggrStatAccumulator.value());
-		
 		calculateAndPersistAggrStat(sessionAggrStatAccumulator.value(),taskid);
+		
+		List<Row> sampleAction = actionRDD.takeSample(false, 10);
+		
+		logger.info(sampleAction.get(0).toString());
+		
+		pesistSampleSession(sampleAction,taskid);
 		
 		sc.close();
 		
@@ -473,6 +483,41 @@ public class UserVisitSessionAnalyzeSpark {
 		// 调用对应的DAO插入统计结果
 		ISessionAggrStatDAO sessionAggrStatDAO = DAOFactory.getSessionAggrStatDAO();
 		sessionAggrStatDAO.insert(sessionAggrStat);  
+	}
+	
+	
+
+	/**
+	 * 把抽取出的100个 session保存到mysql
+	 * @param sampleSession2Aggr
+	 * @param taskid
+	 */
+	private static void pesistSampleSession(List<Row> sampleAction, long taskid) {
+		List<SessionDetail> sessionDetails = new ArrayList<SessionDetail>();
+		
+		for (Row row : sampleAction) {
+			
+			SessionDetail sessionDetail = new SessionDetail();
+			sessionDetail.setTaskid(taskid);  
+			sessionDetail.setUserid(row.getLong(1));  
+			sessionDetail.setSessionid(row.getString(2));  
+			sessionDetail.setPageid(row.getLong(3));  
+			sessionDetail.setActionTime(row.getString(4));
+			sessionDetail.setSearchKeyword(row.getString(5));  
+			sessionDetail.setClickCategoryId(row.getLong(6));  
+			sessionDetail.setClickProductId(row.getLong(7));   
+			sessionDetail.setOrderCategoryIds(row.getString(8));  
+			sessionDetail.setOrderProductIds(row.getString(9));  
+			sessionDetail.setPayCategoryIds(row.getString(10)); 
+			sessionDetail.setPayProductIds(row.getString(11));  
+			
+			sessionDetails.add(sessionDetail);
+			
+		}
+		
+		ISessionDetailDAO sessionDetailDAO = DAOFactory.getSessionDetailDAO();
+		sessionDetailDAO.insertBatch(sessionDetails);
+		
 	}
 
 	private static SQLContext getSQLContext(SparkContext sc) {

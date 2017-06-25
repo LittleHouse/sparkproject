@@ -1,9 +1,11 @@
 package com.ibeifeng.sparkproject.dao.factory;
 
 import com.ibeifeng.sparkproject.dao.ISessionAggrStatDAO;
+import com.ibeifeng.sparkproject.dao.ISessionDetailDAO;
 import com.ibeifeng.sparkproject.dao.ITaskDAO;
 import com.ibeifeng.sparkproject.dao.impl.ITaskDAOImpl;
 import com.ibeifeng.sparkproject.dao.impl.SessionAggrStatDAOImpl;
+import com.ibeifeng.sparkproject.dao.impl.SessionDetailDAOImpl;
 
 public class DAOFactory {
 	
@@ -15,4 +17,7 @@ public class DAOFactory {
 		return new SessionAggrStatDAOImpl();
 	}
 
+	public static ISessionDetailDAO getSessionDetailDAO(){
+		return new SessionDetailDAOImpl();
+	}
 }

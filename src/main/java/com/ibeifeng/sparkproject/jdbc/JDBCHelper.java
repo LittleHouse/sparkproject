@@ -159,31 +159,43 @@ public class JDBCHelper {
 	 * @param params
 	 * @return
 	 */
-	public int excuteBatch(String sql, List<Object[]>  paramList){
-		int colmn = 0;
-		Connection con = null;
+	public int[] executeBatch(String sql, List<Object[]> paramsList) {
+		int[] rtn = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
 		try {
-			con = getConnection();
-			con.setAutoCommit(false);
-			PreparedStatement pstmt = con.prepareStatement(sql);
-			for (Object[] params : paramList) {
-				if(params != null && params.length > 0){
-					for(int i= 0 ;i< params.length ; i++){
-						pstmt.setObject(i+1, params[i]);
+			conn = getConnection();
+			
+			// 第一步：使用Connection对象，取消自动提交
+			conn.setAutoCommit(false);  
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			// 第二步：使用PreparedStatement.addBatch()方法加入批量的SQL参数
+			if(paramsList != null && paramsList.size() > 0) {
+				for(Object[] params : paramsList) {
+					for(int i = 0; i < params.length; i++) {
+						pstmt.setObject(i + 1, params[i]);  
 					}
 					pstmt.addBatch();
 				}
 			}
-			colmn  = pstmt.executeUpdate();
-			con.commit();
+			
+			// 第三步：使用PreparedStatement.executeBatch()方法，执行批量的SQL语句
+			rtn = pstmt.executeBatch();
+			
+			// 最后一步：使用Connection对象，提交批量的SQL语句
+			conn.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			if(con != null){
-				datasource.push(con);
+			e.printStackTrace();  
+		} finally {
+			if(conn != null) {
+				datasource.push(conn);  
 			}
 		}
-		return colmn;
+		
+		return rtn;
 	}
 	
 	/**
