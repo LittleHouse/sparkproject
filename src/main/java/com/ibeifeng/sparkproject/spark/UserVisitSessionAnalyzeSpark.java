@@ -67,6 +67,10 @@ public class UserVisitSessionAnalyzeSpark {
 		JavaPairRDD<String, String> filteredSessionid2AggrInfoRDD = filterSessionAndAggrStat(
 				sessionid2AggrInfoRDD,taskParam,sessionAggrStatAccumulator);
 		
+		
+		// 万万切记，在持久化Accumulator之前一定要有一个action操作，不然累加变量会是空的
+		logger.info("筛选后的session数量：{}",filteredSessionid2AggrInfoRDD.count());
+		
 		calculateAndPersistAggrStat(sessionAggrStatAccumulator.value(),taskid);
 		
 		List<Row> sampleAction = actionRDD.takeSample(false, 10);
@@ -391,10 +395,10 @@ public class UserVisitSessionAnalyzeSpark {
 	}
 	
 	private static void calculateAndPersistAggrStat(String value, long taskid) {
+		
 		// 从Accumulator统计串中获取值
 		long session_count = Long.valueOf(StringUtils.getFieldFromConcatString(
 				value, "\\|", Constants.SESSION_COUNT));  
-		
 		long visit_length_1s_3s = Long.valueOf(StringUtils.getFieldFromConcatString(
 				value, "\\|", Constants.TIME_PERIOD_1s_3s));  
 		long visit_length_4s_6s = Long.valueOf(StringUtils.getFieldFromConcatString(
