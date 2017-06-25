@@ -46,6 +46,13 @@ public interface Constants {
 	String FIELD_PROFESSIONAL = "professional";
 	String FIELD_CITY = "city";
 	String FIELD_SEX = "sex";
+	String FIELD_VISIT_LENGTH = "visit_time";
+	String FIELD_STEP_LENGTH = "step_length";
+	String FIELD_CATEGORY_ID = "category_id";
+	String FIELD_CLICK_COUNT = "click_count";
+	String FIELD_ORDER_COUNT = "order_count";
+	String FIELD_PAY_COUNT = "pay_count";
+	
 	
 	String SESSION_COUNT = "session_count";
 	String TIME_PERIOD_1s_3s = "time_1s_3s";
@@ -63,8 +70,9 @@ public interface Constants {
 	String STEP_PERIOD_10_30  = "step_10_30";
 	String STEP_PERIOD_30_60  = "step_30_60";
 	String STEP_PERIOD_60  = "step_60+";
-	String FIELD_VISIT_LENGTH = "visit_time";
-	String FIELD_STEP_LENGTH = "step_length";
+	
+	
+
 	
 	
 }
