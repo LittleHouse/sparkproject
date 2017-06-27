@@ -37,7 +37,7 @@ public interface Constants {
 	
 	String SPARK_LOCAL_TASK_SESSION = "spark.local.taskid.session";
 	String SPARK_LOCAL_TASK_PAGE = "spark.local.taskid.page";
-	
+	String SPARK_LOCAL_TASKID_PRODUCT = "spark.local.taskid.product";
 	
 	String FIELD_SESSION_ID = "session_id";
 	String FIELD_SEARCH_KEYWORDS = "search_keyword";
@@ -70,6 +70,7 @@ public interface Constants {
 	String STEP_PERIOD_10_30  = "step_10_30";
 	String STEP_PERIOD_30_60  = "step_30_60";
 	String STEP_PERIOD_60  = "step_60+";
+	
 	
 	
 

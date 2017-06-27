@@ -1,4 +1,4 @@
-package com.ibeifeng.sparkproject.spark;
+package com.ibeifeng.sparkproject.spark.session;
 
 import java.util.ArrayList;
 import java.util.Date;
