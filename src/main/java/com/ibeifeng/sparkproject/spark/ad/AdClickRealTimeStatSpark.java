@@ -59,6 +59,7 @@ public class AdClickRealTimeStatSpark {
 		//创建stream对象，设置5s更新一次
 		JavaStreamingContext jssc = new JavaStreamingContext(conf, Durations.seconds(5));
 		
+		jssc.checkpoint("hdfs://192.168.1.105:9000/streaming_checkpoint");
 		
 		//创建kafka DStream，并读取<timestamp province city userid adid>格式的数据
 		JavaPairInputDStream<String, String> adClicklogDStream = creatDstream(jssc);
@@ -93,7 +94,6 @@ public class AdClickRealTimeStatSpark {
 		// 业务功能三：实时统计每天每个广告在最近1小时的滑动窗口内的点击趋势（每分钟的点击量）
 		// 格式<yyyyMMddHHmm_adid,count>
 		JavaPairDStream<String, Long> adClickCountInWindow = calculateAdClickCountByWindow(filterAdClicklogDStream);
-		
 		
 		//把1h窗口点击趋势实时更新数据库
 		saveAdClickCountInWindow(adClickCountInWindow);
