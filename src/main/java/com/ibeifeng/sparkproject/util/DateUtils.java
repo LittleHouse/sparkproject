@@ -179,4 +179,15 @@ public class DateUtils {
 		return sdf.format(date);
 	}
 	
+	/**
+	 * 格式化时间，保留到小时级别
+	 * yyyyMMddHH
+	 * @param date
+	 * @return
+	 */
+	public static String formatTimeHour(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");  
+		return sdf.format(date);
+	}
+	
 }

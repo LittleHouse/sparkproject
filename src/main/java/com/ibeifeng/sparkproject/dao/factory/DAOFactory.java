@@ -1,6 +1,7 @@
 package com.ibeifeng.sparkproject.dao.factory;
 
 import com.ibeifeng.sparkproject.dao.IAdBlacklistDAO;
+import com.ibeifeng.sparkproject.dao.IAdClickTrendDAO;
 import com.ibeifeng.sparkproject.dao.IAdProvinceTop3DAO;
 import com.ibeifeng.sparkproject.dao.IAdStatDAO;
 import com.ibeifeng.sparkproject.dao.IAdUserClickCountDAO;
@@ -10,6 +11,7 @@ import com.ibeifeng.sparkproject.dao.ISessionDetailDAO;
 import com.ibeifeng.sparkproject.dao.ITaskDAO;
 import com.ibeifeng.sparkproject.dao.ITop10CategoryDAO;
 import com.ibeifeng.sparkproject.dao.impl.AdBlacklistDAOImpl;
+import com.ibeifeng.sparkproject.dao.impl.AdClickTrendDAOImpl;
 import com.ibeifeng.sparkproject.dao.impl.AdProvinceTop3DAOImpl;
 import com.ibeifeng.sparkproject.dao.impl.AdStatDAOImpl;
 import com.ibeifeng.sparkproject.dao.impl.AdUserClickCountDAOImpl;
@@ -55,5 +57,9 @@ public class DAOFactory {
 
 	public static IAdProvinceTop3DAO getAdProvinceTop3DAO() {
 		return new AdProvinceTop3DAOImpl();
+	}
+
+	public static IAdClickTrendDAO getAdClickTrendDAO() {
+		return new AdClickTrendDAOImpl();
 	}
 }
