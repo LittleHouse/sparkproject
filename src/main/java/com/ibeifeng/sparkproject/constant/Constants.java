@@ -20,6 +20,9 @@ public interface Constants {
 	String JDBC_USER_PROD = "jdbc.user.prod";
 	String JDBC_PASSWORD_PROD = "jdbc.password.prod";
 	
+	String KAFKA_METADATA_BROKER_LIST = "kafka.metadata.broker.list";
+	String KAFKA_TOPICS = "kafka.topics";
+	
 	
 	/**
 	 * 任务相关的常量
@@ -70,6 +73,7 @@ public interface Constants {
 	String STEP_PERIOD_10_30  = "step_10_30";
 	String STEP_PERIOD_30_60  = "step_30_60";
 	String STEP_PERIOD_60  = "step_60+";
+
 	
 	
 	
